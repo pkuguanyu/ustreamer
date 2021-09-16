@@ -146,6 +146,9 @@ typedef struct {
 	controls_s ctl;
 
 	device_runtime_s *run;
+	
+	int				device_id;
+	int 				devices;
 } device_s;
 
 

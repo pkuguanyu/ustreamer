@@ -85,6 +85,9 @@ void stream_loop(stream_s *stream) {
 
 	LOG_INFO("Using V4L2 device: %s", stream->dev->path);
 	LOG_INFO("Using desired FPS: %u", stream->dev->desired_fps);
+	
+	peer_management group;
+	if (stream->dev->devices > -1 && stream->dev->device_id > -1) init(&group, stream->dev->device_id, stream->dev->devices);
 
 #	ifdef WITH_OMX
 	if (stream->h264_sink) {
@@ -97,7 +100,9 @@ void stream_loop(stream_s *stream) {
 		unsigned fluency_passed = 0;
 		unsigned captured_fps = 0;
 		unsigned captured_fps_accum = 0;
+		unsigned captured_frames = 0;
 		long long captured_fps_second = 0;
+		int max_gap = 0;
 
 		LOG_INFO("Capturing ...");
 
@@ -199,6 +204,19 @@ void stream_loop(stream_s *stream) {
 								LOG_PERF_FPS("A new second has come; captured_fps=%u", captured_fps);
 							}
 							captured_fps_accum += 1;
+							captured_frames++;
+							if ((captured_frames & 15) == 15) printf("captured %d\n", captured_frames);
+							//if the device is in a synchronization group
+							if (stream->dev->devices > -1 && stream->dev->device_id > -1)
+								while (1) {
+									update_peers(&group);
+									update_current_frame(&group, captured_frames);
+									broadcast(&group);
+									max_gap = gap(&group);
+									if (max_gap < 2) break;
+									//if the device is on ahead of others by at least 2 frames, wait for 5ms.
+									usleep(5000);
+								}
 
 							const long double fluency_delay = workers_pool_get_fluency_delay(pool, ready_wr);
 							grab_after = now + fluency_delay;

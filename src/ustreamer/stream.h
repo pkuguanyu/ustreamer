@@ -48,7 +48,7 @@
 #ifdef WITH_GPIO
 #	include "gpio/gpio.h"
 #endif
-
+#include "peer_management.h"
 
 typedef struct {
 	frame_s			*frame;

@@ -101,6 +101,8 @@ device_s *device_init(void) {
 	dev->min_frame_size = 128;
 	dev->timeout = 1;
 	dev->run = run;
+	dev->device_id = -1;
+	dev->devices = -1;
 	return dev;
 }
 

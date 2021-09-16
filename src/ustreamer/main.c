@@ -19,7 +19,6 @@
 #                                                                            #
 *****************************************************************************/
 
-
 #include <assert.h>
 #ifdef NDEBUG
 #	error WTF dude? Asserts are good things!
@@ -40,6 +39,7 @@
 #	include <IL/OMX_Core.h>
 #endif
 
+//extern "C" {
 #include "../libs/tools.h"
 #include "../libs/threading.h"
 #include "../libs/logging.h"
@@ -52,7 +52,7 @@
 #ifdef WITH_GPIO
 #	include "gpio/gpio.h"
 #endif
-
+//}
 
 typedef struct {
 	stream_s *stream;
@@ -110,7 +110,7 @@ static void _install_signal_handlers(void) {
 
 	LOG_DEBUG("Ignoring SIGPIPE ...");
 	assert(signal(SIGPIPE, SIG_IGN) != SIG_ERR);
-}
+}	
 
 int main(int argc, char *argv[]) {
 	assert(argc >= 0);
@@ -131,6 +131,8 @@ int main(int argc, char *argv[]) {
 #	endif
 
 	if ((exit_code = options_parse(options, dev, enc, stream, server)) == 0) {
+		printf("device id: %d    devices: %d\n", dev->device_id, dev->devices);
+	
 #		ifdef WITH_OMX
 		if (enc->type == ENCODER_TYPE_OMX || stream->h264_sink) {
 			bcm_host_init();

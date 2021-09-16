@@ -122,6 +122,8 @@ enum _OPT_VALUES {
 	_O_NO_LOG_COLORS,
 
 	_O_FEATURES,
+	_O_DEVICE_ID = 'C',
+	_O_DEVICES = 'S'
 };
 
 static const struct option _LONG_OPTS[] = {
@@ -218,8 +220,9 @@ static const struct option _LONG_OPTS[] = {
 	{"help",					no_argument,		NULL,	_O_HELP},
 	{"version",					no_argument,		NULL,	_O_VERSION},
 	{"features",				no_argument,		NULL,	_O_FEATURES},
-
-	{NULL, 0, NULL, 0},
+	{"device_id",					required_argument,	NULL,	_O_DEVICE_ID},
+	{"devices",					required_argument,	NULL,	_O_DEVICES},
+	{NULL, 0, NULL, 0}
 };
 
 
@@ -473,6 +476,9 @@ int options_parse(options_s *options, device_s *dev, encoder_s *enc, stream_s *s
 			case _O_HELP:		_help(stdout, dev, enc, stream, server); return 1;
 			case _O_VERSION:	puts(VERSION); return 1;
 			case _O_FEATURES:	_features(); return 1;
+			
+			case _O_DEVICE_ID: 			OPT_SET(dev->device_id, (int)((char)(*optarg)) - '0');
+			case _O_DEVICES: 			OPT_SET(dev->devices, (int)((char)(*optarg)) - '0');
 
 			case 0:		break;
 			default:	return -1;
