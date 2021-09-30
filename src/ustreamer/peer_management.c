@@ -3,10 +3,12 @@
 //initialization
 void init(peer_management *p, int _device_id, int _devices)
 {
-	for (int i = 0; i < 6; ++i) {
-		if (i == _device_id) continue;
-		udp_client_init(&(p->clientskt[i]), "127.0.0.1", 8020 + i);
-	}
+	if (0 != _device_id) udp_client_init(&(p->clientskt[0]), "127.0.0.1", 8020 + 0);
+	if (1 != _device_id) udp_client_init(&(p->clientskt[1]), "127.0.0.1", 8020 + 1);
+	if (2 != _device_id) udp_client_init(&(p->clientskt[2]), "127.0.0.1", 8020 + 2);
+	if (3 != _device_id) udp_client_init(&(p->clientskt[3]), "127.0.0.1", 8020 + 3);
+	if (4 != _device_id) udp_client_init(&(p->clientskt[4]), "127.0.0.1", 8020 + 4);
+	if (5 != _device_id) udp_client_init(&(p->clientskt[5]), "127.0.0.1", 8020 + 5);
 
 	for (int i = 0; i < _devices; ++i)
 		p->current_frame[i] = 0;
